@@ -1,0 +1,1 @@
+[{"model": "posts.post", "pk": 1, "fields": {"title": "Тест", "body": "Тест 22323", "photo": "posts/photo_2022-12-03_12-00-50.jpg", "pub_date": "2024-07-21", "is_pay": false, "is_active": true, "author": 1}}, {"model": "posts.post", "pk": 2, "fields": {"title": "ee", "body": "e", "photo": "", "pub_date": "2024-07-21", "is_pay": false, "is_active": true, "author": 9}}]
