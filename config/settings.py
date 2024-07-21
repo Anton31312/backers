@@ -85,8 +85,10 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': os.environ.get('PG_DB'),
         'USER': os.environ.get('PG_USER'),
-        'PASSWORD': os.environ.get('PG_PASSWORD'),
-    }
+        'PASSWORD': os.environ.get('PG_PASS'),
+        'HOST': os.environ.get('PG_HOST'),
+        'PORT': os.environ.get('PG_PORT'),
+    },
 }
 
 
@@ -146,7 +148,7 @@ STRIPE_BASE_URL = os.getenv('STRIPE_BASE_URL')
 STRIPE_API_KEY = os.getenv('STRIPE_API_KEY')
 
 CELERY_BROKER_URL = os.getenv('CELERY_BROKER_URL')
-CELERY_RESULT_BACKEND = os.getenv('CELERY_RESULT_BACKEND')
+CELERY_RESULT_BACKEND = os.getenv('CELERY_BROKER_URL')
 CELERY_BEAT_SCHEDULE = {
     'change_is_pays': {
         'task': 'users.tasks.change_is_pays',

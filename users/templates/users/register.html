@@ -1,0 +1,29 @@
+{% extends 'posts/base.html'%}
+
+{% block content %}
+    <div class="row">
+        <div class="col-3"></div>
+            <div class="col-6">
+                <form method="post" enctype="multipart/form-data">
+                        <div class="card">
+                            <div class="card-header">
+                                <h2 class="card-title">
+                                    Регистрация
+                                </h2>
+                            </div>
+                            <div class="card-body">
+                                    {% csrf_token %}
+                                    {{ form.as_p }}
+                                    <button type="submit" class="btn btn-success"> Регистрация </button>
+                                    {% if butt_add %}
+                                        <a href="{% url 'users:login' %}" class="btn btn-primary"> Войти </a>
+                                        <a href="{% url 'users:resending_token' %}" class="btn btn-warning"> Получить новый токен </a>
+                                    {% endif %}
+                            </div>
+                            <div class="card-footer"></div>
+                        </div>
+                </form>
+            </div>
+        </div>
+    </div>
+{%  endblock %}

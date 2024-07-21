@@ -1,0 +1,21 @@
+{% extends 'posts/base.html' %}
+
+{% block content %}
+    {% if user.is_authenticated %}
+        <div class="row">
+            <div class="row text-center">
+                {% if not user.is_vip %}
+                    <H2>VIP клиенты могут добавлять и просматривать платные публикации</H2>
+                    <div class="col-12">
+                        <div class="card-footer">
+                            <a href="{{ link }}" class="btn btn-success">Оплатить Vip </a>
+{#                            <a href="{% link %}" class="btn btn-success">Оплатить Vip</a>#}
+                            <a href="{% url 'posts:index' %}" class="btn btn-warning">Отмена </a>
+                        </div>
+                {% else %}
+                    <H2>Вы уже являетесь VIP клиентом. Олплата не требуется</H2>
+                {% endif %}
+            </div>
+        </div>
+    {% endif %}
+{% endblock %}
