@@ -13,10 +13,12 @@ class UserRegisterForm(UserCreationForm):
         """Валидация номера телефона"""
         cleaned_data = self.cleaned_data['phone']
 
-        if int(cleaned_data[0]) != '+':
-            raise forms.ValidationError('Номер телефона должен начинаться с "+". ')
-        elif len(cleaned_data) != 12:
-            raise forms.ValidationError(f'Номер телефона должен состоять из 12 символов {len(cleaned_data)}')
+        if int(cleaned_data[0]) != 8:
+            raise forms.ValidationError('Номер телефона должен начинаться с 8. ')
+        elif not cleaned_data.isdigit():
+            raise forms.ValidationError('Номер телефона должен состоять только из цифр')
+        elif len(cleaned_data) != 11:
+            raise forms.ValidationError(f'Номер телефона должен состоять из 11 символов {len(cleaned_data)}')
 
         return cleaned_data
 

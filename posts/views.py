@@ -12,8 +12,9 @@ class PostsListView(ListView):
     model = Post
 
     def get_queryset(self, *args, **kwargs):
-        queryset = super().get_queryset(*args, **kwargs)
-        queryset = queryset.filter(is_active=True)
+        if self.request.user.is_superuser or self.request.user.is_staff:
+            return Post.objects.all()
+        queryset = Post.objects.filter(is_active=True)
         return queryset
 
 

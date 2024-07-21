@@ -1,10 +1,12 @@
 import os
 import prosto_sms
 import stripe
+import random
+
 from django.shortcuts import redirect
 from config.settings import STRIPE_API_KEY
 from users.models import User
-import random
+
 
 stripe.api_key = STRIPE_API_KEY
 

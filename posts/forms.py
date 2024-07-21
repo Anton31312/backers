@@ -6,7 +6,7 @@ class PostForm(forms.ModelForm):
     """Форма публикации"""
     class Meta:
         model = Post
-        fields = ['title', 'body', 'photo', 'is_active', 'is_pay']
+        fields = ['title', 'body', 'photo', 'is_active', 'is_pay', 'author',]
 
     def __init__(self, user, *args, **kwargs, ):
         self.user = user

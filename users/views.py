@@ -35,7 +35,7 @@ class RegisterView(CreateView):
 class UserUpdateView(LoginRequiredMixin, UpdateView):
     """Представление изменения данных пользователя"""
     model = UserRegisterForm,
-    success_url = reverse_lazy('publications:index')
+    success_url = reverse_lazy('posts:index')
     form_class = UserRegisterForm
 
     def get_object(self, queryset=None):
@@ -53,7 +53,7 @@ def delete_user(request, user_id):
     """Представление удаления пользователя"""
     user = get_object_or_404(User, pk=user_id)
     user.delete()
-    return redirect(reverse('publications:index'))
+    return redirect(reverse('posts:index'))
 
 
 @login_required
