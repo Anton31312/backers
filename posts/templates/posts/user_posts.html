@@ -1,0 +1,56 @@
+{% extends 'posts/base.html' %}
+{% block content %}
+    {% if user.is_authenticated %}
+        <div class="row">
+        <H6>Мои публикации:</H6>
+            <div class="col-12">Общее количество: {{ posts_count_all }}</div>
+            <div class="col-12">Активные: {{ posts_count_active }} </div>
+            <div class="col-12">Платные:: {{ posts_count_pay }}</div>
+        </div>
+        <div class="row text-center">
+            <H2>Список моих публикаций:</H2>
+            <div class="col-8">
+                {% for object in posts_list %}
+                    <div class="col-md-4">
+                        <div class="card shadow-sm">
+                            <div class="card-body">
+                                <div class="card-body">
+                                    <table class="table">
+                                        <div class="container">
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <img src="/media/{{ object.photo }}" class="img-fluid" alt="Адаптивное изображение">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <tr>
+                                            <td>Тема публикации</td>
+                                            <td>{{ object.title}}</td>
+                                        </tr>
+                                        <tr>
+                                            {% if object.is_pay %}
+                                                <td>Платная</td>
+                                            {% else %}
+                                                <td> Бесплатная </td>
+                                            {% endif %}
+                                            <td>{{ object.pub_date }}</td>
+                                        </tr>
+
+                                    </table>
+                                </div>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <a href="{% url 'posts:view' object.pk %}"
+                                    class="btn btn-sm btn-outline-secondary">Посмотреть</a>
+                                    <a href="{% url 'posts:update' object.pk %}"
+                                    class="btn btn-sm btn-outline-secondary">Изменить</a>
+                                    <a href="{% url 'posts:delete' object.pk %}" type="button"
+                                    class="btn btn-sm btn-danger">Удалить</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+`               {% endfor %}
+            </div>
+        </div>
+    {% endif %}
+{% endblock %}
