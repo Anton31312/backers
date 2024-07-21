@@ -1,0 +1,30 @@
+[tool.poetry]
+name = "backers"
+version = "0.1.0"
+description = "This app is made to support bloggers and encourage them to create important and valuable content."
+authors = ["Антон Федяев <fearthe54@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+django = "^5.0.7"
+celery = "^5.4.0"
+django-celery-beat = "^2.6.0"
+django-sms = "^0.7.0"
+django-timezone-field = "^7.0"
+dnspython = "^2.6.1"
+eventlet = "^0.36.1"
+pillow = "^10.4.0"
+psycopg2-binary = "^2.9.9"
+redis = "^5.0.7"
+requests = "^2.32.3"
+stripe = "^10.3.0"
+python-dotenv = "^1.0.1"
+click = "^8.1.7"
+certifi = "^2024.7.4"
+sqlparse = "^0.5.0"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
