@@ -90,3 +90,14 @@
 ```
 docker-compose down
 ```
+### Stripe
+Для осуществления оплаты подписки реализована интеграция со Stripe. Чтобы начать пользоваться ею, вам необходимо заполнить в .env поле STRIPE_API - ваш секретный API ключ.
+'''
+https://docs.stripe.com/api
+'''
+
+### ProstoSMS
+Для осуществления верификации номера телефона пользователя при регистрации реализована интеграция с SmsAero. Чтобы начать пользоваться ею, вам необходимо заполнить в .env SMSAERO_EMAIL и SMSAERO_API_KEY.
+'''
+https://smsaero.ru/integration/class/python/
+'''

@@ -144,7 +144,6 @@ LOGOUT_REDIRECT_URL = '/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
 
-STRIPE_BASE_URL = os.getenv('STRIPE_BASE_URL')
 STRIPE_API_KEY = os.getenv('STRIPE_API_KEY')
 
 CELERY_BROKER_URL = os.getenv('CELERY_BROKER_URL')
@@ -159,3 +158,6 @@ CELERY_BEAT_SCHEDULE = {
         'schedule': timedelta(minutes=2),
     },
 }
+
+SMSAERO_EMAIL = os.getenv('SMSAERO_EMAIL'),
+SMSAERO_API_KEY = os.getenv('SMSAERO_API_KEY')

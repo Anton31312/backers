@@ -1,0 +1,16 @@
+{% extends 'posts/base.html' %}
+
+{% block content %}
+<div class="col-12">
+    <a href="{% url 'posts:index' %}" class="btn btn-outline-primary">На главное меню</a>
+</div>
+<div class="container d-flex justify-content-center">
+    <div class = "text-center">
+        <div class="card">
+            <div class="card-header">
+                <h2 class="my-0 font-weight-normal">Оплата прошла. Добро пожаловать в VIP!</h2>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

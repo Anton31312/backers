@@ -1,8 +1,12 @@
+import string
+
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.shortcuts import get_object_or_404, render
+from django.http import HttpResponse
+from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse_lazy, reverse
 from django.views.generic import CreateView, UpdateView
+from smsaero import SmsAeroException
 
 from users.forms import *
 from users.utils import *
@@ -12,24 +16,21 @@ class RegisterView(CreateView):
     """Представление регистрации пользователя"""
     model = User
     form_class = UserRegisterForm
-    success_url = reverse_lazy('users:login')
-
-    def post(self, request, *args, **kwargs):
-        form = self.get_form()
-        if self.model.objects.filter(phone=form.data['phone']).exists():
-            return render(self.request, "users/register.html", {'form': form, 'butt_add': True})
-        return super().post(request, *args, **kwargs)
+    template_name = "users/user_form.html"
+    success_url = reverse_lazy('users:confirm_phone')
 
     def form_valid(self, form):
         self.object = form.save()
-        phone = self.object.phone
-        key = token_generate()
-        self.object.token = key
+        phone = int(self.object.phone)
+        token = ''.join(random.choice(string.digits) for i in range(6))
+        self.object.token = token
         self.object.save()
-
-        send_token(phone, key)
-
-        return redirect('users:confirm_phone')
+        try:
+            send_sms(phone=phone, message=f'Код подтверждения {token}')
+            print('Сообщение отправлено')
+        except SmsAeroException as e:
+            print(f"An error occurred: {e}")
+        return super().form_valid(form)
 
 
 class UserUpdateView(LoginRequiredMixin, UpdateView):
@@ -67,6 +68,21 @@ def payment_vip(request):
     context_data = {'link': link}
     return render(request, 'users/payment_vip.html', context_data)
 
+@login_required
+def payment_success(request):
+    """Отображение страницы при успешной оплате"""
+
+    user = request.user
+    user.is_vip = True
+    user.save()
+
+    return render(request, 'users/payment_success.html')
+
+
+@login_required
+def payment_cancel(request):
+    """Отображение страницы при отмены оплаты"""
+    return render(request, 'users/payment_cancel.html')
 
 def get_all_users(request):
     """Функция получения пользователей"""
@@ -91,21 +107,17 @@ def toggle_activity_user(request, pk):
 
 def get_token(request):
     """Функция получения и проверки токена от клиента"""
-    if request.method == "POST":
-        form = GetTokenForm(request.POST)
-        if form.is_valid():
-            phone = form.data["phone"]
-            key_token = form.data["token"]
-            user = get_object_or_404(User, phone=phone)
-            if str(user.token) == str(key_token) and str(user.phone) == str(phone):
-                user.is_active = True
-                user.token = None
-                user.save()
-                return redirect(reverse('users:login'))
-            else:
-                return render(request, "users/confirm_phone.html", {'form': form, 'butt_add': True})
-
-    return render(request, 'users/confirm_phone.html', {'form': GetTokenForm})
+    if request.method == 'POST':
+        entered_token = request.POST.get('token', '')
+        phone = request.POST.get('phone', '')
+        user = get_object_or_404(User, phone=phone)
+        if str(user.token) == str(entered_token):
+            user.is_active = True
+            user.save()
+            return redirect('users:profile')
+        else:
+            return HttpResponse("Код подтверждения неверный. Попробуйте еще раз.")
+    return render(request, 'users/confirm_phone.html')
 
 
 def resending_token(request):
@@ -118,7 +130,7 @@ def resending_token(request):
             token = token_generate()
             user.token = token
             user.save()
-            send_token(phone, token)
+            send_sms(phone, token)
 
             return redirect(reverse('users:confirm_phone'))
 

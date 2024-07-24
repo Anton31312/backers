@@ -1,52 +1,85 @@
 from django.test import TestCase, Client
-from django.urls import reverse, reverse_lazy
+from django.urls import reverse
+
 from posts.models import Post
 from users.models import User
 
 
 class PostViewTest(TestCase):
-    """Тест публикаций """
+    """
+    Тестирование работы с публикациями
+    """
+
     def setUp(self):
         self.client = Client()
-        self.user = User.objects.create(phone='89992223311', password='qwe12#QQM', is_active=True)
-        self.client.force_login(self.user)
+        self.user = User.objects.create(phone='88888888888', password='123456', is_active=True)
+        self.post = Post.objects.create(title='Тест1', body='Описание теста1',
+                                              author=self.user, is_pay=True)
+        self.client.force_login(user=self.user)
 
-    def test_get_post(self):
-        """Тест создания публикации """
-        response = self.client.get(reverse('posts:create'))
+    def test_create_posts(self):
+        """
+        Тестирование создания публикации
+        """
+
+        url = reverse('posts:create')
+        response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'posts/post_form.html')
         data = {
-            'title': 'Test Post',
-            'body': 'This is a test Post.',
+            'title': 'Тест2',
+            'body': 'Описание теста2',
         }
-        response = self.client.post(reverse('posts:create'), data)
+        response = self.client.post(url, data)
         self.assertEqual(response.status_code, 302)
         self.assertRedirects(response, reverse('posts:index'))
-        self.assertEqual(Post.objects.all().filter(author_id=self.user).first().title, 'Test Post')
+        self.assertEqual(Post.objects.all().filter(author_id=self.user).first().body,
+                         'Описание теста1')
+        self.assertEqual(Post.objects.all().filter(author_id=self.user).count(), 2)
 
-    def test_list(self):
-        """Тест списка публикации """
-        response = self.client.get(reverse('posts:index'))
+    def test_posts_list(self):
+        """
+        Тестирование списка публикаций
+        """
+
+        url = reverse('posts:index')
+        response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
+        self.assertEqual(Post.objects.count(), 1)
+
+    def test_update_posts(self):
+        """
+        Тестирование обновления публикации
+        """
+
+        url = reverse('posts:update', args=[self.post.pk])
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+        data = {
+            'title': 'Тест1',
+            'body': 'Новое описание теста',
+        }
+        response = self.client.post(url, data)
+        self.post.refresh_from_db()
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(self.post.body, 'Новое описание теста')
+
+    def test_delete_posts(self):
+        """
+        Тестирование удаления публикации
+        """
+
+        url = reverse('posts:delete', args=[self.post.pk])
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+        self.client.delete(url)
         self.assertEqual(Post.objects.count(), 0)
 
-    def test_update(self):
-        """Тест обновления публикации """
-        self.post_update = Post.objects.all().filter(author_id=self.user).first()
-        response = self.client.get(reverse_lazy('posts:update', kwargs={'pk': self.post_update.id}))
-        self.assertEqual(response.status_code, 200)
-        data = {'title': 'Updated test Post',
-                'body': 'Updated test content'}
-        response = self.client.post(reverse('posts:update', kwargs={'pk': self.post_update.id}), data=data)
-        self.post_update.refresh_from_db()
-        self.assertEqual(self.post_update.title, 'Updated test Post')
-        self.assertEqual(self.post_update.body, 'Updated test content')
+    def test_user_posts_list(self):
+        """s
+        Тестирование страницы публикаций для чтения
+        """
 
-    def test_delete(self):
-        """Тест удаления публикации """
-        self.post_delete = Post.objects.all().filter(author_id=self.user).first()
-        response = self.client.delete(reverse_lazy('posts:delete', args=[self.post_delete.id]))
-        self.assertEqual(response.status_code, 204)
-        
-        self.assertEqual(Post.objects.count(), 0)
+        url = reverse('posts:user_posts')
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)

@@ -1,6 +1,7 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 
+
 NULLABLE = {'blank': True, 'null': True}
 
 class User(AbstractUser):
@@ -19,7 +20,7 @@ class User(AbstractUser):
     REQUIRED_FIELDS = []
 
     def __str__(self):
-        return f'{self.phone}'
+        return f'{self.first_name} {self.last_name} {self.phone}'
 
     class Meta:
         verbose_name = "пользователь"

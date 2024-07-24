@@ -14,8 +14,11 @@ urlpatterns = [
     path('profile/', UserUpdateView.as_view(), name='profile'),
     path('delete_user/<int:user_id>/', delete_user, name='delete_user'),
     path('delete_user_danger', delete_user_danger, name='delete_user_danger'),
-    path('payment_vip/', payment_vip, name='payment_vip'),
     path('user_list/', get_all_users, name='user_list'),
     path('activity/<int:pk>', toggle_activity_user, name='toggle_activity_user'),
     path('resending_token/', resending_token, name='resending_token'),
+
+    path('payment_vip/', payment_vip, name='payment_vip'),
+    path('payment_success/', payment_success, name='payment_success'),
+    path('payment_cancel/', payment_cancel, name='payment_cancel'),
 ]

@@ -1,0 +1,16 @@
+{% extends 'posts/base.html' %}
+
+{% block content %}
+<div class="col-12">
+    <a href="{% url 'users:payment_vip' %}" class="btn btn-outline-primary">К оплате</a>
+</div>
+<div class="container d-flex justify-content-center">
+    <div class = "text-center">
+        <div class="card">
+            <div class="card-header">
+                <h2 class="my-0 font-weight-normal">Оплата не прошла. Попробуйте снова.</h2>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

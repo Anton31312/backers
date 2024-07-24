@@ -1,16 +1,26 @@
-import os
-import prosto_sms
 import stripe
 import random
 
-from django.shortcuts import redirect
-from config.settings import STRIPE_API_KEY
+from smsaero import SmsAero
+from django.conf import settings
+
 from users.models import User
 
 
-stripe.api_key = STRIPE_API_KEY
+stripe.api_key = settings.STRIPE_API_KEY
 
 AMOUNT = 50
+
+def send_sms(phone: int, message: str):
+    """Формирование отправки SMS-сообщения"""
+
+    email = settings.SMSAERO_EMAIL
+    if isinstance(email, tuple):
+        email = email[0]
+    key = settings.SMSAERO_API_KEY
+    api = SmsAero(email, key)
+    return api.send_sms(phone, message)
+
 
 def create_sessions():
     """Функия создания сессии для оплаты с помощью сервиса Stripe"""
@@ -29,7 +39,8 @@ def create_sessions():
 
     # Создание сессии
     sessions = stripe.checkout.Session.create(
-        success_url="https://example.com/success",
+        success_url="http://127.0.0.1:8000/users/payment_success",
+        cancel_url='http://127.0.0.1:8000/users/payment_cancel',
         line_items=[{"price": price.id, "quantity": 1}],
         mode="payment",
     )
@@ -52,18 +63,6 @@ def token_generate():
     """Функция генерации одноразового ключа"""
     key = ''.join([str(random.randint(0, 9)) for _ in range(4)])
     return key
-
-
-def send_token(phone, key):
-    """Функция отправки СМС клиенту"""
-    api = prosto_sms.API(
-        email=os.getenv('EMAIL_SMS'),
-        password=os.getenv('PASSWORD_SMS')
-    )
-    sender_name = os.getenv('SENDER_NAME_SMS')
-    api.methods.push_message(text=f'Код для регистрации на сайте "Backers" {key}', phone=f'{phone}', sender_name=f'{sender_name}')
-
-    return redirect('users:confirm_phone')
 
 
 def change_is_pays():
