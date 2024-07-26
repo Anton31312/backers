@@ -87,7 +87,6 @@ DATABASES = {
         'USER': os.environ.get('PG_USER'),
         'PASSWORD': os.environ.get('PG_PASS'),
         'HOST': os.environ.get('PG_HOST'),
-        'PORT': os.environ.get('PG_PORT'),
     },
 }
 
