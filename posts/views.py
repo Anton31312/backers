@@ -1,7 +1,7 @@
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import render
-from django.urls import reverse_lazy
+from django.urls import reverse, reverse_lazy
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from posts.forms import PostForm
 from posts.models import Post
@@ -23,9 +23,16 @@ class PostsCreateView(LoginRequiredMixin, CreateView):
     model = Post
     form_class = PostForm
     success_url = reverse_lazy('posts:index')
+    login_url = reverse_lazy('users:login')
+
+    def form_valid(self, form):
+        self.object = form.save()
+        self.object.author = self.request.user
+        self.object.save()
+        return super().form_valid(form)
 
     def get_form_kwargs(self):
-        kwargs = super(PostsCreateView, self).get_form_kwargs()
+        kwargs = super().get_form_kwargs()
         kwargs['user'] = self.request.user
         return kwargs
 
@@ -45,12 +52,13 @@ class PostsUpdateView(LoginRequiredMixin, UpdateView):
     """Представление для обновления одной публикации"""
     model = Post
     form_class = PostForm
+    login_url = reverse_lazy('users:login')
 
     def get_success_url(self):
-        return reverse_lazy('posts:view', kwargs={'pk': self.object.pk})
+        return reverse('posts:view', args=[self.kwargs.get('pk')])
 
     def get_form_kwargs(self):
-        kwargs = super(PostsUpdateView, self).get_form_kwargs()
+        kwargs = super().get_form_kwargs()
         kwargs['user'] = self.request.user
         return kwargs
 
@@ -59,6 +67,7 @@ class PostsDeleteView(LoginRequiredMixin, DeleteView):
     """Представление для обновления одной публикации"""
     model = Post
     success_url = reverse_lazy('posts:index')
+    login_url = reverse_lazy('users:login')
 
 
 @login_required

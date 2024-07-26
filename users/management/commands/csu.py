@@ -6,7 +6,7 @@ class Command(BaseCommand):
     """Класс создания админа"""
     def handle(self, *args, **options):
         user = User.objects.create(
-            phone='89992223311',
+            phone='+79992223311',
             nickname='MainAdmin',
             first_name='Admin',
             last_name='Admin',

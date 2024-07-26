@@ -15,13 +15,6 @@ class Post(models.Model):
     is_active = models.BooleanField(default=True, verbose_name='скрыть/показывать')
     author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, **NULLABLE, verbose_name="автор")
 
-    def save(self, *args, **kwargs):
-        if not self.author:
-            self.author = get_user_model().objects.get(is_active=True)
-        else:
-            self.author = self.author
-        super().save(*args, **kwargs)
-
     def __str__(self):
         return
 

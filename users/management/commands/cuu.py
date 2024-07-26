@@ -6,7 +6,7 @@ class Command(BaseCommand):
     """Класс создания обычного пользователя"""
     def handle(self, *args, **options):
         user = User.objects.create(
-            phone='86661112233',
+            phone='+76661112233',
             nickname='TestUser',
             first_name='Petr',
             last_name='Petrov',
