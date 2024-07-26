@@ -96,7 +96,7 @@ docker-compose down
 https://docs.stripe.com/api
 '''
 
-### ProstoSMS
+### SMSAERO
 Для осуществления верификации номера телефона пользователя при регистрации реализована интеграция с SmsAero. Чтобы начать пользоваться ею, вам необходимо заполнить в .env SMSAERO_EMAIL и SMSAERO_API_KEY.
 '''
 https://smsaero.ru/integration/class/python/
