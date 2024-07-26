@@ -7,20 +7,8 @@ class UserRegisterForm(UserCreationForm):
     """Форма для регистрации пользователя"""
     class Meta:
         model = User
-        fields = ('phone', 'avatar', 'city', 'first_name', 'last_name')
+        fields = ('phone', 'nickname', 'avatar', 'city', 'first_name', 'last_name', 'password1', 'password2')
 
-    def clean_phone(self):
-        """Валидация номера телефона"""
-        cleaned_data = self.cleaned_data['phone']
-
-        if int(cleaned_data[0]) != 8:
-            raise forms.ValidationError('Номер телефона должен начинаться с 8. ')
-        elif not cleaned_data.isdigit():
-            raise forms.ValidationError('Номер телефона должен состоять только из цифр')
-        elif len(cleaned_data) != 11:
-            raise forms.ValidationError(f'Номер телефона должен состоять из 11 символов {len(cleaned_data)}')
-
-        return cleaned_data
 
 
 class UserForm(UserChangeForm):
@@ -28,7 +16,7 @@ class UserForm(UserChangeForm):
 
     class Meta:
         model = User
-        fields = ['phone', 'password', 'avatar', 'city', 'first_name', 'last_name']
+        fields = ['phone', 'nickname', 'password', 'avatar', 'city', 'first_name', 'last_name']
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

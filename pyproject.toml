@@ -25,6 +25,10 @@ certifi = "^2024.7.4"
 sqlparse = "^0.5.0"
 prosto-sms = "^0.0.3"
 smsaero-api = "^3.0.0"
+django-phonenumbers = "^1.0.1"
+django-phonenumber-field = "^8.0.0"
+flake8 = "^7.1.0"
+coverage = "^7.6.0"
 
 
 [build-system]

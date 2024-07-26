@@ -1,5 +1,3 @@
-import string
-
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponse
@@ -21,8 +19,8 @@ class RegisterView(CreateView):
 
     def form_valid(self, form):
         self.object = form.save()
-        phone = int(self.object.phone)
-        token = ''.join(random.choice(string.digits) for i in range(6))
+        phone = int(self.object.phone.as_e164[1:])
+        token = token_generate()
         self.object.token = token
         self.object.save()
         try:
@@ -36,7 +34,8 @@ class RegisterView(CreateView):
 class UserUpdateView(LoginRequiredMixin, UpdateView):
     """Представление изменения данных пользователя"""
     model = UserRegisterForm,
-    success_url = reverse_lazy('posts:index')
+    success_url = reverse_lazy('users:profile')
+    login_url = reverse_lazy('users:login')
     form_class = UserRegisterForm
 
     def get_object(self, queryset=None):
@@ -109,8 +108,8 @@ def get_token(request):
     """Функция получения и проверки токена от клиента"""
     if request.method == 'POST':
         entered_token = request.POST.get('token', '')
-        phone = request.POST.get('phone', '')
-        user = get_object_or_404(User, phone=phone)
+        nickname = request.POST.get('nickname', '')
+        user = get_object_or_404(User, nickname=nickname)
         if str(user.token) == str(entered_token):
             user.is_active = True
             user.save()

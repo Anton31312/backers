@@ -1,3 +1,4 @@
+import string
 import stripe
 import random
 
@@ -24,27 +25,24 @@ def send_sms(phone: int, message: str):
 
 def create_sessions():
     """Функия создания сессии для оплаты с помощью сервиса Stripe"""
-    # Сумма платежа
-    amount = AMOUNT
-
-    # Создание продукта
-    product = stripe.Product.create(name='Платная подписка')
-
-    # Создание цены
-    price = stripe.Price.create(
-        currency="usd",
-        unit_amount=amount,
-        product=f'{product.id}',
-    )
-
-    # Создание сессии
-    sessions = stripe.checkout.Session.create(
-        success_url="http://127.0.0.1:8000/users/payment_success",
-        cancel_url='http://127.0.0.1:8000/users/payment_cancel',
-        line_items=[{"price": price.id, "quantity": 1}],
+    stripe_session = stripe.checkout.Session.create(
+        line_items=[
+            {
+                "price_data": {
+                    "currency": "rub",
+                    "unit_amount": settings.PRODUCT_PRICE * 100,
+                    "product_data": {
+                        "name": "VIP подписка",
+                    },
+                },
+                "quantity": 1,
+            },
+        ],
         mode="payment",
+        success_url='http://127.0.0.1:8000/users/payment_success',
+        cancel_url='http://127.0.0.1:8000/users/payment_cancel'
     )
-    return sessions
+    return stripe_session.get('id'), stripe_session.get('url')
 
 
 def retrieve_a_session(session_id):
@@ -61,7 +59,7 @@ def retrieve_a_session(session_id):
 
 def token_generate():
     """Функция генерации одноразового ключа"""
-    key = ''.join([str(random.randint(0, 9)) for _ in range(4)])
+    key = ''.join(random.choice(string.digits) for i in range(6))
     return key
 
 

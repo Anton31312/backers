@@ -1,18 +1,23 @@
 {% extends 'posts/base.html'%}
 
 {% block content %}
-    <body>
-        <div class="container">
-            <h2>Пожалуйста, введите данные:</h2>
-            <form method="post">
-                {% csrf_token %}
-                {{ form.as_p }}
-                <button type="submit" class="btn btn-primary">Отправить</button>
-                {% if butt_add %}
-                    <a href="{% url 'users:resending_token' %}" class="btn btn-warning">Получить новый токен</a>
-                {% endif %}
-            </form>
+<div class="container d-flex justify-content-center">
+    <div class = "text-center">
+        <div class="card mb-4 box-shadow" style="max-width: 36rem;">
+            <div class="card-header">
+                <h3 class="my-0 font-weight-normal">Проверка номера телефона</h3>
+            </div>
+            <div class="card-body">
+                <form method="post">
+                    {% csrf_token %}
+                    <input type="text" name="nickname" placeholder="Введите ваш никнейм"><br><br>
+                    <input type="text" name="token" placeholder="Введите ваш код из SMS"><br><br>
+                    <button type="submit" class="btn btn-outline-primary">
+                        Проверить
+                    </button>
+                </form>
+            </div>
         </div>
-    </body>
-
+    </div>
+</div>
 {% endblock %}
