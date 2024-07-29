@@ -26,7 +26,7 @@ class PostsCreateView(LoginRequiredMixin, CreateView):
     login_url = reverse_lazy('users:login')
 
     def form_valid(self, form):
-        self.object = form.save()
+        self.object = form.save(commit=False)
         self.object.author = self.request.user
         self.object.save()
         return super().form_valid(form)

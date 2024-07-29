@@ -1,11 +1,14 @@
-version: "3"
-
 services:
 
   redis:
     image: redis
     ports:
       - '6379:6379'
+    healthcheck:
+      test: redis-cli ping
+      interval: 5s
+      timeout: 3s
+      retries: 5
 
   db:
     image: postgres:16-alpine
@@ -42,7 +45,7 @@ services:
   celery:
     build: .
     tty: true
-    command: celery -A config worker -l INFO -P eventlet 
+    command: celery -A config worker -l INFO 
     env_file:
       - .env
     depends_on:
@@ -56,8 +59,12 @@ services:
     env_file:
       - .env
     depends_on:
-      - redis
-      - app
+      redis:
+        condition: service_healthy
+      app:
+        condition: service_started
+      db:
+        condition: service_healthy
 
 volumes:
   pg_data:

@@ -5,7 +5,7 @@ import random
 from smsaero import SmsAero
 from django.conf import settings
 
-from users.models import User
+
 
 
 stripe.api_key = settings.STRIPE_API_KEY
@@ -62,27 +62,3 @@ def token_generate():
     key = ''.join(random.choice(string.digits) for i in range(6))
     return key
 
-
-def change_is_pays():
-    """Функция смены статуса пользователя на VIP"""
-    users_unpaid = User.objects.filter(
-        payment_session_id__isnull=False,
-        is_vip=False
-    )
-
-    for user in users_unpaid:
-        if retrieve_a_session(user.payment_session_id) == "paid":
-            user.is_vip = True
-            user.payment_session_id = None
-            user.save()
-
-
-def clean_tokens():
-    """Функция очистки токенов"""
-    users_with_token = User.objects.filter(
-        token__isnull=False,
-    )
-
-    for user in users_with_token:
-        user.token = None
-        user.save()
